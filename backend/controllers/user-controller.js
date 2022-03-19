@@ -25,7 +25,7 @@ const signup = async (req, res, next) => {
         next(new HttpError(`Invalid inputs `, 422))
     }
 
-    const {name, email, password, places} = req.body;
+    const {name, email, password} = req.body;
     let existingUser;
     try {
         existingUser = await User.findOne({email})
@@ -47,7 +47,7 @@ const signup = async (req, res, next) => {
         email,
         password,
         image : 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/City_Lights_%2833522578970%29.jpg/1024px-City_Lights_%2833522578970%29.jpg?1646766503738',
-        places
+        places: []
     })
 
 

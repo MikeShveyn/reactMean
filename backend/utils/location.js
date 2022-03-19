@@ -12,7 +12,7 @@ async function getCoordsForAddress(address) {
     }
     let response;
     try {
-      response = await axios.get('http://api.positionstack.com/v1/forward', {params})
+        response = await axios.get('http://api.positionstack.com/v1/forward', {params})
     }catch (e) {
         throw e;
     }
