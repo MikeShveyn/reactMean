@@ -2,60 +2,58 @@ const { v4: uuidv4 } = require('uuid'); // ⇨ '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd
 const {validationResult} = require('express-validator')
 const getCoordinates = require('../utils/location')
 const HttpError = require("../models/http-error");
-const Place = require('../models/place')
+const Post = require('../models/post')
 const {use} = require("express/lib/router");
 const User = require('../models/user');
 const mongoose = require("mongoose");
 
-const getPlaceById = async (req, res, next) => {
-    const placeId = req.params.placeId;
-    let place;
+const getPostById = async (req, res, next) => {
+    const postId = req.params.postId;
+    let post;
 
     try {
-        place = await Place.findById(placeId);
+        post = await Post.findById(postId);
     }catch (e) {
         const error = new HttpError(
-            "Could not fetch places", 500
+            "Could not fetch posts", 500
         )
         return next(error)
     }
 
-    if (!place) {
+    if (!post) {
         return next(
-            new HttpError("Couldn't  find place for the provided place id", 404)
+            new HttpError("Couldn't  find post for the provided post id", 404)
         )
     }
 
-    res.json({place : place.toObject({getters: true})});
+    res.json({post : post.toObject({getters: true})});
 }
 
 
-const getPlacesByUserId = async (req, res, next) => {
+const getPostByUserId = async (req, res, next) => {
     const userId = req.params.uid;
 
-    //let places;
-    let userWithPlaces;
+    let userWithPost;
     try{
-        //places = await Place.find({creator: userId})
-        userWithPlaces = await User.findById(userId).populate('places')
+        userWithPost = await User.findById(userId).populate('posts')
     }catch (e) {
         const error = new HttpError(
-            "Could not fetch places ", 500
+            "Could not fetch posts ", 500
         )
         return next(error)
     }
 
 
-    if(!userWithPlaces || userWithPlaces.places.length === 0) {
+    if(!userWithPost || userWithPost.posts.length === 0) {
         return next(
-            new HttpError("Couldn't  find place for the provided user id", 404)
+            new HttpError("Couldn't  find post for the provided user id", 404)
         )
     }
 
-    res.json({places : userWithPlaces.places.map(place => place.toObject({getters: true}))});
+    res.json({posts : userWithPost.posts.map(post => post.toObject({getters: true}))});
 }
 
-const createPlace = async (req, res, next) => {
+const createPost = async (req, res, next) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()) {
         next(new HttpError(`Invalid inputs `, 422))
@@ -70,7 +68,7 @@ const createPlace = async (req, res, next) => {
         return next(e)
     }
 
-    const newPlace = new Place({
+    const newPost = new Post({
         title,
         description,
         address,
@@ -84,7 +82,7 @@ const createPlace = async (req, res, next) => {
         user = await User.findById(creator);
     }catch (e) {
         const error = new HttpError(
-            'Creating place failed',
+            'Creating post failed',
             500
         );
         return next(error);
@@ -101,13 +99,13 @@ const createPlace = async (req, res, next) => {
     try{
         const sess = await mongoose.startSession();
         sess.startTransaction();
-        await newPlace.save({session : sess});
-        user.places.push(newPlace);
+        await newPost.save({session : sess});
+        user.posts.push(newPost);
         await user.save({session: sess})
         await sess.commitTransaction();
     }catch (e) {
         const error = new HttpError(
-            'Creating place failed',
+            'Creating post failed',
             500
         );
         return next(error);
@@ -115,62 +113,62 @@ const createPlace = async (req, res, next) => {
     }
 
 
-    res.status(201).json({place: newPlace})
+    res.status(201).json({post: newPost})
 };
 
-const updatePlace = async (req, res, next) => {
+const updatePost = async (req, res, next) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()) {
         next(new HttpError(`Invalid inputs `, 422))
     }
 
     const {title, description} = req.body;
-    const placeId = req.params.placeId;
+    const postId = req.params.postId;
 
-    let place;
+    let post;
     try {
-        place = await Place.findById(placeId);
+        post = await Post.findById(postId);
     }catch (e) {
         const error = new HttpError(
-            "Could not fetch places", 500
+            "Could not fetch posts", 500
         )
         return next(error)
     }
     
 
-    place.title = title;
-    place.description = description;
+    post.title = title;
+    post.description = description;
     
     try{
-        await place.save()
+        await post.save()
     }catch (e) {
         const error = new HttpError(
-            'Updating place failed',
+            'Updating post failed',
             500
         );
         return next(error);
     }
 
     
-    res.status(200).json({place: place.toObject({getters : true})})
+    res.status(200).json({post: post.toObject({getters : true})})
 }
 
-const deletePlace = async (req, res, next) => {
-    const placeId = req.params.placeId;
+const deletePost = async (req, res, next) => {
+    const postId = req.params.postId;
 
-    let place;
+    let post;
     try {
-        place = await Place.findById(placeId).populate('creator');
+        post = await Post.findById(postId).populate('creator');
     }catch (e) {
         const error = new HttpError(
-            "Could not fetch places", 500
+            "Could not fetch posts", 500
         )
         return next(error)
     }
 
-    if(!place) {
+    if(!post) {
         const error = new HttpError(
-            "Could not find places ", 404
+            "Could not find posts ", 404
         )
         return next(error)
     }
@@ -178,22 +176,22 @@ const deletePlace = async (req, res, next) => {
     try {
         const sess = await mongoose.startSession();
         sess.startTransaction();
-        await place.remove({session: sess});
-        place.creator.places.pull(place);
-        await place.creator.save({session: sess})
+        await post.remove({session: sess});
+        post.creator.posts.pull(post);
+        await post.creator.save({session: sess})
         await sess.commitTransaction();
     }catch (e) {
         const error = new HttpError(
-            "Could not delete places", 500
+            "Could not delete post", 500
         )
         return next(error)
     }
 
-    res.status(200).json({message: 'Place was successful deleted'})
+    res.status(200).json({message: 'Post was successful deleted'})
 }
 
-exports.getPlaceById = getPlaceById;
-exports.getPlacesByUserId = getPlacesByUserId;
-exports.createPlace = createPlace;
-exports.updatePlace = updatePlace;
-exports.deletePlace = deletePlace;
+exports.getPostById = getPostById;
+exports.getPostByUserId = getPostByUserId;
+exports.createPost = createPost;
+exports.updatePost = updatePost;
+exports.deletePost= deletePost;

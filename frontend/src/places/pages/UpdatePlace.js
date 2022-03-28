@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
-import {dummyPlaces} from "./UserPlaces";
+import React, {useContext, useEffect, useState} from "react";
+import {useHistory, useParams} from "react-router-dom";
 import Input from "../../shared/components/FormElements/Input/Input";
 import Button from "../../shared/components/FormElements/Button";
 import {VALIDATOR_MINLENGTH, VALIDATOR_REQUIRE} from "../../shared/components/Utils/validators";
@@ -8,10 +7,17 @@ import {useForm} from "../../shared/hoooks/form-hook";
 import Card from "../../shared/components/UIElements/Card/Card";
 
 import './PlaceForm.css';
+import {useHttpClient} from "../../shared/hoooks/http-hook";
+import LoadingSpinner from "../../shared/components/UIElements/Loading/LoadingSpinner";
+import ErrorModal from "../../shared/components/UIElements/Error/ErrorModal";
+import {AuthContext} from "../../shared/context/auth-context";
 
 const UpdatePlace = () => {
-    const [isLoading, setIsLoading] = useState(true);
-    const placeId = useParams().placeId;
+    const {isLoading, error, sendRequest, clearError} = useHttpClient();
+    const [loadedPost, setLoadedPost] = useState();
+    const postId = useParams().postId;
+    const auth = useContext(AuthContext)
+    const history = useHistory();
 
     const [formState, inputHandler, setFormData] = useForm({
         title: {
@@ -24,47 +30,70 @@ const UpdatePlace = () => {
         }
     }, true)
 
-    const placeUpdateSubmitHandler = event => {
+    const placeUpdateSubmitHandler = async event => {
         event.preventDefault();
-        console.log(formState.inputs);
+        try {
+            await sendRequest(`http://localhost:5000/api/posts/${postId}`,
+                'PATCH',
+                JSON.stringify({
+                    title: formState.inputs.title.value,
+                    description : formState.inputs.description.value,
+                }),
+                {'Content-Type': 'application/json'}
+            )
+            history.push('/' + auth.userId + '/posts');
+        }catch (e) {
+
+        }
+
     }
 
-    const relevantPlace = dummyPlaces.find(p => p.id === placeId);
-
     useEffect(() => {
-        if(relevantPlace) {
-            setFormData(
-                {
-                    title: {
-                        value: relevantPlace.title.value,
-                        isValid: true
-                    },
-                    description: {
-                        value: relevantPlace.description.value,
-                        isValid: true
-                    }
-                },true)
+        const fetchPost = async() => {
+            try {
+                const data = await sendRequest(
+                    `http://localhost:5000/api/posts/${postId}`);
+                setLoadedPost(data.post)
+
+                setFormData(
+                    {
+                        title: {
+                            value: data.post.title,
+                            isValid: true
+                        },
+                        description: {
+                            value: data.post.description,
+                            isValid: true
+                        }
+                    },true)
+            }
+            catch (e) {
+
+            }
         }
-        setIsLoading(false);
-    },[setFormData, relevantPlace])
+        fetchPost();
+    },[setFormData, postId, sendRequest])
 
 
-    if(!relevantPlace){
+    if(isLoading) {
+        return <div className="center">
+            <LoadingSpinner/>
+        </div>
+    }
+
+    if(!loadedPost && !error){
         return <div className="center">
             <Card>
-                <h2>Couldn't fetch place</h2>
+                <h2>Couldn't fetch post</h2>
             </Card>
         </div>
     }
 
-    if(isLoading) {
-        return <div className="center">
-            <h2>Loading</h2>
-        </div>
-    }
 
 
-    return <form className='place-form' onSubmit={placeUpdateSubmitHandler}>
+    return <React.Fragment>
+        <ErrorModal error={error} onClear={clearError}/>
+        {!isLoading && loadedPost && <form className='place-form' onSubmit={placeUpdateSubmitHandler}>
             <Input
                 id="title"
                 element='input'
@@ -72,8 +101,8 @@ const UpdatePlace = () => {
                 label='Title'
                 validators={[VALIDATOR_REQUIRE()]}
                 onInput={inputHandler}
-                initialValue={formState.inputs.title.value}
-                initialIsValid={formState.inputs.title.valid}
+                initialValue={loadedPost.title}
+                initialIsValid={true}
                 errorText="Please enter a valid title"/>
 
             <Input
@@ -82,12 +111,14 @@ const UpdatePlace = () => {
                 label='Description'
                 validators={[VALIDATOR_MINLENGTH(5)]}
                 onInput={inputHandler}
-                initialValue={formState.inputs.description.value}
-                initialIsValid={formState.inputs.description.valid}
+                initialValue={loadedPost.description}
+                initialIsValid={true}
                 errorText="Please enter a valid description."/>
 
             <Button type="submit" disabled={!formState.isValid}>UPDATE PLACE</Button>
-        </form>
+        </form>}
+    </React.Fragment>
+
 }
 
 export default UpdatePlace;

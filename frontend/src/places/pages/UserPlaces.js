@@ -1,42 +1,44 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import PlaceList from "../components/PlaceList";
-import {useParams} from "react-router-dom";
-
-
-export const dummyPlaces = [
-    {
-        id : 'p1',
-        title : 'Wellington',
-        description : 'Wellington is at the south-western tip of the North Island on Cook Strait, separating the North and South Islands.',
-        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/City_Lights_%2833522578970%29.jpg/1024px-City_Lights_%2833522578970%29.jpg?1646766503738',
-        address: 'New Zealand',
-        location: {
-            lat:-41.2521043,
-            lng: 174.4740796
-        },
-        creator: 'u1'
-    },
-    {
-        id : 'p2',
-        title : 'Wellington',
-        description : 'Wellington is at the south-western tip of the North Island on Cook Strait, separating the North and South Islands.',
-        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Cable_Car%2C_Wellington%2C_New_Zealand.JPG',
-        address: 'New Zealand',
-        location: {
-            lat:-41.2521043,
-            lng: 174.4740796
-        },
-        creator: 'u2'
-    }
-]
+import {useHistory, useParams} from "react-router-dom";
+import {useHttpClient} from "../../shared/hoooks/http-hook";
+import ErrorModal from "../../shared/components/UIElements/Error/ErrorModal";
+import LoadingSpinner from "../../shared/components/UIElements/Loading/LoadingSpinner";
 
 
 const UserPlaces = props => {
+    const {isLoading, error, sendRequest, clearError} = useHttpClient();
+    const [loadedPosts, setLoadedPosts] = useState();
     const userId = useParams().userId;
-    const filteredPlaced = dummyPlaces.filter(place => {
-        return place.creator === userId;
-    });
-    return <PlaceList items={filteredPlaced}/>
+    const history = useHistory();
+
+    useEffect(() => {
+        const fetchPlaces = async () => {
+            try {
+                const data = await sendRequest(`http://localhost:5000/api/posts/user/${userId}`);
+                setLoadedPosts(data.posts)
+            }catch (e) {
+                history.push('/');
+            }
+
+        }
+        fetchPlaces();
+    }, [sendRequest, userId])
+
+    const deleteHandler = (deletedId) => {
+        setLoadedPosts(prevP => prevP.filter(post => post.id !== deletedId))
+    }
+
+    return <React.Fragment>
+        <ErrorModal error={error} onClear={clearError}/>
+        {isLoading && <div className="center">
+            <LoadingSpinner/>
+        </div>}
+        {!isLoading && loadedPosts &&
+        <PlaceList items={loadedPosts} onDelete={deleteHandler}/>}
+    </React.Fragment>
+
+
 
 }
 

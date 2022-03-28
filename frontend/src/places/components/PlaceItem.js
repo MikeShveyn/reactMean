@@ -7,9 +7,13 @@ import {AuthContext} from "../../shared/context/auth-context";
 
 
 import './PlaceItem.css'
+import {useHttpClient} from "../../shared/hoooks/http-hook";
+import ErrorModal from "../../shared/components/UIElements/Error/ErrorModal";
+import LoadingSpinner from "../../shared/components/UIElements/Loading/LoadingSpinner";
 
 
 const PlaceItem = props => {
+    const {isLoading, error, sendRequest, clearError} = useHttpClient();
     const auth = useContext(AuthContext);
     const [showMap, setShowMap] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
@@ -18,13 +22,21 @@ const PlaceItem = props => {
     const closeMapHandler = () => setShowMap(false);
     const openConfirmHandler = () => setShowConfirm(true);
     const closeConfirmHandler = () => setShowConfirm(false);
-    const confirmDeleteHandler = () => {
-        console.log('delete')
+    const confirmDeleteHandler = async () => {
         closeConfirmHandler();
+        try {
+            await sendRequest(`http://localhost:5000/api/posts/${props.id}`,
+                'DELETE',
+            )
+            props.onDelete(props.id);
+        }catch (e) {
+
+        }
     }
 
     return (
         <React.Fragment>
+            <ErrorModal error={error} onClear={clearError} />
             <Modal
                 show={showMap}
                 onCancel={closeMapHandler}
@@ -54,6 +66,7 @@ const PlaceItem = props => {
 
             <li className='place-item'>
                 <Card className='place-item-content'>
+                    {isLoading && <LoadingSpinner asOverlay/>}
                     <div className='place-item-image'>
                         <img src={props.image} alt={props.title}/>
                     </div>
@@ -64,8 +77,8 @@ const PlaceItem = props => {
                     </div>
                     <div className='place-item-actions'>
                         <Button inverse onClick={openMapHandler}>VIEW ON MAP</Button>
-                        {auth.isLoggedIn &&  <Button to={`/places/${props.id}`}>EDIT</Button>}
-                        {auth.isLoggedIn && <Button danger onClick={openConfirmHandler}>DELETE</Button>}
+                        {auth.userId === props.creatorId &&  <Button to={`/posts/${props.id}`}>EDIT</Button>}
+                        {auth.userId === props.creatorId && <Button danger onClick={openConfirmHandler}>DELETE</Button>}
                     </div>
                 </Card>
             </li>

@@ -81,7 +81,7 @@ const login = async (req, res, next) => {
         return next(new HttpError('Credentials are wrong'), 401)
     }
 
-    res.json({message: 'Login succeed'})
+    res.json({message: 'Login succeed', user : existingUser.toObject({getters: true})})
 }
 
 

@@ -10,13 +10,16 @@ import {AuthContext} from "./shared/context/auth-context";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState(null)
 
-  const login = useCallback(() => {
+  const login = useCallback((uid) => {
     setIsLoggedIn(true);
+    setUserId(uid)
   },[])
 
   const logout = useCallback(() => {
     setIsLoggedIn(false);
+    setUserId(null)
   },[])
 
 
@@ -29,15 +32,15 @@ const App = () => {
             <Users/>
           </Route>
 
-          <Route path="/:userId/places">
+          <Route path="/:userId/posts">
             <UserPlaces/>
           </Route>
 
-          <Route path="/places/new" exact={true}>
+          <Route path="/posts/new" exact={true}>
             <NewPlace/>
           </Route>
 
-          <Route path="/places/:placeId" exact={true}>
+          <Route path="/posts/:postId" exact={true}>
             <UpdatePlace/>
           </Route>
 
@@ -51,7 +54,7 @@ const App = () => {
             <Users/>
           </Route>
 
-          <Route path="/:userId/places">
+          <Route path="/:userId/posts">
             <UserPlaces/>
           </Route>
 
@@ -67,6 +70,7 @@ const App = () => {
 
   return <AuthContext.Provider value={{
     isLoggedIn,
+      userId,
     login,
     logout
   }}>

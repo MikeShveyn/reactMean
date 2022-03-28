@@ -1,16 +1,16 @@
 const express = require('express');
 const {check} = require('express-validator')
 
-const placesControllers = require('../controllers/places-controller');
+const postsControllers = require('../controllers/posts-controller');
 const router = express.Router();
 
 
 
 // Order matters !!!
 
-router.get('/user/:uid', placesControllers.getPlacesByUserId)
+router.get('/user/:uid', postsControllers.getPostByUserId)
 
-router.get('/:placeId', placesControllers.getPlaceById)
+router.get('/:postId', postsControllers.getPostById)
 
 
 router.post('/',
@@ -25,17 +25,17 @@ router.post('/',
             .isEmpty()
 
     ],
-    placesControllers.createPlace)
+    postsControllers.createPost)
 
-router.patch('/:placeId',
+router.patch('/:postId',
     check('title')
         .not()
         .isEmpty(),
     check('description')
         .isLength({min: 5}),
-    placesControllers.updatePlace)
+    postsControllers.updatePost)
 
 
-router.delete('/:placeId', placesControllers.deletePlace)
+router.delete('/:postId', postsControllers.deletePost)
 
 module.exports = router;
