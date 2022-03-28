@@ -59,7 +59,7 @@ const createPost = async (req, res, next) => {
         next(new HttpError(`Invalid inputs `, 422))
     }
 
-    const {title, description, address, creator} = req.body;
+    const {title, description, address} = req.body;
 
     let location
     try{
@@ -74,12 +74,12 @@ const createPost = async (req, res, next) => {
         address,
         location,
         image : 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/City_Lights_%2833522578970%29.jpg/1024px-City_Lights_%2833522578970%29.jpg?1646766503738',
-        creator
+        creator : req.userData.userId
     })
 
     let user;
     try {
-        user = await User.findById(creator);
+        user = await User.findById(req.userData.userId);
     }catch (e) {
         const error = new HttpError(
             'Creating post failed',
@@ -134,7 +134,13 @@ const updatePost = async (req, res, next) => {
         )
         return next(error)
     }
-    
+
+    if(post.creator.toString() !== req.userData.userId) {
+        const error = new HttpError(
+            "You have no permissions to update the post", 401
+        )
+        return next(error)
+    }
 
     post.title = title;
     post.description = description;
@@ -169,6 +175,13 @@ const deletePost = async (req, res, next) => {
     if(!post) {
         const error = new HttpError(
             "Could not find posts ", 404
+        )
+        return next(error)
+    }
+
+    if(post.creator.id !== req.userData.userId) {
+        const error = new HttpError(
+            "You have no permissions to delete the post", 401
         )
         return next(error)
     }

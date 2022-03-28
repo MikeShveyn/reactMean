@@ -46,7 +46,7 @@ const Auth = props => {
                    }
                    );
 
-               auth.login(data.user.id);
+               auth.login(data.userId, data.token);
            } catch (e) {
 
            }
@@ -63,7 +63,7 @@ const Auth = props => {
                                'Content-Type': 'application/json'
                            }
                 )
-               auth.login(data.user.id);
+               auth.login(data.userId, data.token);
            }catch (e) {
            }
 

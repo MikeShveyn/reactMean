@@ -3,7 +3,7 @@ const {check} = require('express-validator')
 
 const postsControllers = require('../controllers/posts-controller');
 const router = express.Router();
-
+const checkAuth = require('../middleware/check-auth')
 
 
 // Order matters !!!
@@ -12,6 +12,7 @@ router.get('/user/:uid', postsControllers.getPostByUserId)
 
 router.get('/:postId', postsControllers.getPostById)
 
+router.use(checkAuth)
 
 router.post('/',
     [
