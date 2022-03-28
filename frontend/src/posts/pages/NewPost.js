@@ -8,10 +8,10 @@ import {AuthContext} from "../../shared/context/auth-context";
 import ErrorModal from "../../shared/components/UIElements/Error/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/Loading/LoadingSpinner";
 import {useHistory} from "react-router-dom";
-import './PlaceForm.css';
+import './PostForm.css';
 
 
-const NewPlace = () => {
+const NewPost = () => {
     const {isLoading, error, sendRequest, clearError} = useHttpClient();
     const auth = useContext(AuthContext)
 
@@ -87,4 +87,4 @@ const NewPlace = () => {
 
 };
 
-export default NewPlace;
+export default NewPost;

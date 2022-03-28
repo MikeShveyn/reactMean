@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
-import PlaceList from "../components/PlaceList";
+import PostList from "../components/PostList";
 import {useHistory, useParams} from "react-router-dom";
 import {useHttpClient} from "../../shared/hoooks/http-hook";
 import ErrorModal from "../../shared/components/UIElements/Error/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/Loading/LoadingSpinner";
 
 
-const UserPlaces = props => {
+const UserPosts = props => {
     const {isLoading, error, sendRequest, clearError} = useHttpClient();
     const [loadedPosts, setLoadedPosts] = useState();
     const userId = useParams().userId;
@@ -35,11 +35,11 @@ const UserPlaces = props => {
             <LoadingSpinner/>
         </div>}
         {!isLoading && loadedPosts &&
-        <PlaceList items={loadedPosts} onDelete={deleteHandler}/>}
+        <PostList items={loadedPosts} onDelete={deleteHandler}/>}
     </React.Fragment>
 
 
 
 }
 
-export default UserPlaces;
+export default UserPosts;

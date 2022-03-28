@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require("body-parser");
 const mongoose = require('mongoose');
 
-const postsRoutes = require('./routes/places-routes');
+const postsRoutes = require('./routes/posts-routes');
 const usersRoutes = require('./routes/users-routes')
 const HttpError = require("./models/http-error");
 const mongoUrl = 'mongodb+srv://mike:QNQAmcQp59F9qrrt@cluster0.93nvw.mongodb.net/newsapp?retryWrites=true&w=majority'

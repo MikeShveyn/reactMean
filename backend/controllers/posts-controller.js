@@ -7,6 +7,22 @@ const {use} = require("express/lib/router");
 const User = require('../models/user');
 const mongoose = require("mongoose");
 
+
+const getAllPosts = async (req, res, next) => {
+    let posts;
+
+    try {
+        posts = await Post.find({});
+    }catch (e) {
+        const error = new HttpError(
+            "Could not fetch posts", 500
+        )
+        return next(error)
+    }
+
+    res.json({posts : posts.map(post => post.toObject({getters: true}))});
+}
+
 const getPostById = async (req, res, next) => {
     const postId = req.params.postId;
     let post;
@@ -101,9 +117,10 @@ const createPost = async (req, res, next) => {
         sess.startTransaction();
         await newPost.save({session : sess});
         user.posts.push(newPost);
-        await user.save({session: sess})
+        await user.save({session: sess,  validateModifiedOnly: true})
         await sess.commitTransaction();
     }catch (e) {
+        console.log(e)
         const error = new HttpError(
             'Creating post failed',
             500
@@ -203,6 +220,7 @@ const deletePost = async (req, res, next) => {
     res.status(200).json({message: 'Post was successful deleted'})
 }
 
+exports.getAllPosts = getAllPosts;
 exports.getPostById = getPostById;
 exports.getPostByUserId = getPostByUserId;
 exports.createPost = createPost;

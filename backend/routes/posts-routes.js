@@ -7,10 +7,11 @@ const checkAuth = require('../middleware/check-auth')
 
 
 // Order matters !!!
-
 router.get('/user/:uid', postsControllers.getPostByUserId)
 
 router.get('/:postId', postsControllers.getPostById)
+
+router.get('/', postsControllers.getAllPosts)
 
 router.use(checkAuth)
 

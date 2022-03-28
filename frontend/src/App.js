@@ -1,13 +1,14 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {BrowserRouter as Router, Route, Redirect, Switch} from "react-router-dom";
 import Users from "./users/pages/Users";
-import NewPlace from "./places/pages/NewPlace";
-import UserPlaces from "./places/pages/UserPlaces";
+import NewPost from "./posts/pages/NewPost";
+import UserPosts from "./posts/pages/UserPosts";
 import MainNavigation from "./shared/components/Navigation/MainNavigation";
-import UpdatePlace from "./places/pages/UpdatePlace";
+import UpdatePost from "./posts/pages/UpdatePost";
 import Auth from "./users/pages/Auth";
 import {AuthContext} from "./shared/context/auth-context";
 import {useAuth} from "./shared/hoooks/auth-hook";
+import AllPosts from "./posts/pages/AllPosts";
 
 
 const App = () => {
@@ -19,19 +20,23 @@ const App = () => {
         routes = (
             <Switch>>
                 <Route path="/" exact={true}>
+                    <AllPosts/>
+                </Route>
+
+                <Route path="/users" exact={true}>
                     <Users/>
                 </Route>
 
                 <Route path="/:userId/posts">
-                    <UserPlaces/>
+                    <UserPosts/>
                 </Route>
 
                 <Route path="/posts/new" exact={true}>
-                    <NewPlace/>
+                    <NewPost/>
                 </Route>
 
                 <Route path="/posts/:postId" exact={true}>
-                    <UpdatePlace/>
+                    <UpdatePost/>
                 </Route>
 
                 <Redirect to='/'/>
@@ -41,11 +46,11 @@ const App = () => {
         routes = (
             <Switch>>
                 <Route path="/" exact={true}>
-                    <Users/>
+                    <AllPosts/>
                 </Route>
 
                 <Route path="/:userId/posts">
-                    <UserPlaces/>
+                    <UserPosts/>
                 </Route>
 
                 <Route path="/auth" exact={true}>

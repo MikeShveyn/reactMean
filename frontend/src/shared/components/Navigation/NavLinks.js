@@ -10,21 +10,26 @@ const NavLinks = props => {
 
     return <ul className="nav-links">
         <li>
-            <NavLink to="/" exact>ALL USERS</NavLink>
+            <NavLink to="/" exact>ALL POSTS</NavLink>
         </li>
         {auth.isLoggedIn &&
         <li>
-            <NavLink to={`/${auth.userId}/posts`}>MY PLACES</NavLink>
+            <NavLink to="/users" exact>ALL USERS</NavLink>
         </li>
         }
         {auth.isLoggedIn &&
         <li>
-            <NavLink to="/posts/new">ADD PLACES</NavLink>
+            <NavLink to={`/${auth.userId}/posts`}>MY POSTS</NavLink>
+        </li>
+        }
+        {auth.isLoggedIn &&
+        <li>
+            <NavLink to="/posts/new">ADD POST</NavLink>
         </li>
         }
         {!auth.isLoggedIn &&
         <li>
-            <NavLink to="/auth">AUTH</NavLink>
+            <NavLink to="/auth">LOGIN</NavLink>
         </li>
         }
         {auth.isLoggedIn &&

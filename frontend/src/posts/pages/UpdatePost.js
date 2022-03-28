@@ -6,13 +6,13 @@ import {VALIDATOR_MINLENGTH, VALIDATOR_REQUIRE} from "../../shared/components/Ut
 import {useForm} from "../../shared/hoooks/form-hook";
 import Card from "../../shared/components/UIElements/Card/Card";
 
-import './PlaceForm.css';
+import './PostForm.css';
 import {useHttpClient} from "../../shared/hoooks/http-hook";
 import LoadingSpinner from "../../shared/components/UIElements/Loading/LoadingSpinner";
 import ErrorModal from "../../shared/components/UIElements/Error/ErrorModal";
 import {AuthContext} from "../../shared/context/auth-context";
 
-const UpdatePlace = () => {
+const UpdatePost = () => {
     const {isLoading, error, sendRequest, clearError} = useHttpClient();
     const [loadedPost, setLoadedPost] = useState();
     const postId = useParams().postId;
@@ -122,4 +122,4 @@ const UpdatePlace = () => {
 
 }
 
-export default UpdatePlace;
+export default UpdatePost;

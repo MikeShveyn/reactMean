@@ -1,11 +1,11 @@
 import React from "react";
 
-import './PlaceList.css'
+import './PostList.css'
 import Card from "../../shared/components/UIElements/Card/Card";
-import PlaceItem from "./PlaceItem";
+import PostItem from "./PostItem";
 import Button from "../../shared/components/FormElements/Button";
 
-const PlaceList = props => {
+const PostList = props => {
     if(props.items.length === 0) {
         return <div className="place-list center">
             <Card>
@@ -20,7 +20,7 @@ const PlaceList = props => {
 
     return <ul className="place-list">
         {props.items.map(place => {
-            return <PlaceItem
+            return <PostItem
                 key={place.id}
                 id={place.id}
                 image={place.image}
@@ -35,4 +35,4 @@ const PlaceList = props => {
     </ul>
 }
 
-export default PlaceList;
+export default PostList;

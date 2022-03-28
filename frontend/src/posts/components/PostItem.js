@@ -6,13 +6,13 @@ import Map from "../../shared/components/UIElements/Map/Map";
 import {AuthContext} from "../../shared/context/auth-context";
 
 
-import './PlaceItem.css'
+import './PostItem.css'
 import {useHttpClient} from "../../shared/hoooks/http-hook";
 import ErrorModal from "../../shared/components/UIElements/Error/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/Loading/LoadingSpinner";
 
 
-const PlaceItem = props => {
+const PostItem = props => {
     const {isLoading, error, sendRequest, clearError} = useHttpClient();
     const auth = useContext(AuthContext);
     const [showMap, setShowMap] = useState(false);
@@ -88,4 +88,4 @@ const PlaceItem = props => {
     )
 }
 
-export default PlaceItem;
+export default PostItem;
