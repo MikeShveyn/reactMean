@@ -12,11 +12,16 @@ const UsersItem = props => {
                         <Avatar image={props.image} alt={props.name}/>
                     </div>
                     <div className="user-item-info">
-                        <h2>{props.name}</h2>
-                        <h3>
-                            {props.postCount}
-                            {props.postCount === 1 ? ' Post' : ' Posts'}
-                        </h3>
+                        <div>
+                            <h2>{props.name}</h2>
+                            <h3>{props.email}</h3>
+                        </div>
+                        <div>
+                            <h3>
+                                {props.postCount}
+                                {props.postCount === 1 ? ' Post' : ' Posts'}
+                            </h3>
+                        </div>
                     </div>
                 </Link>
             </Card>

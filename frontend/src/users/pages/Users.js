@@ -1,18 +1,22 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useContext} from "react";
 import UsersList from "../components/UsersList";
 import ErrorModal from "../../shared/components/UIElements/Error/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/Loading/LoadingSpinner";
 import {useHttpClient} from "../../shared/hoooks/http-hook";
+import {AuthContext} from "../../shared/context/auth-context";
 
 const Users = () => {
+    const auth = useContext(AuthContext);
     const [loadedUsers, setLoadedUsers] = useState();
     const {isLoading, error, sendRequest, clearError} = useHttpClient();
 
     useEffect(()=> {
         const fetchUsers = async () => {
             try {
-                const data = await  sendRequest(`http://localhost:5000/api/users`);
-
+                const data = await  sendRequest(`http://localhost:5000/api/users`,
+                'GET',
+                null,
+                {Authorization: 'Bearer ' + auth.token});
                 setLoadedUsers(data.users);
             }catch (e) {
             }

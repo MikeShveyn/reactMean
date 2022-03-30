@@ -2,13 +2,10 @@ const express = require('express');
 const {check} = require('express-validator')
 
 const usersControllers = require('../controllers/user-controller');
-
 const router = express.Router();
+const checkAuth = require("../middleware/check-auth");
 
 // Order matters !!!
-
-router.get('/', usersControllers.getUsers)
-
 router.post('/signup' ,
     check('name')
         .not()
@@ -21,6 +18,14 @@ router.post('/signup' ,
     , usersControllers.signup)
 
 router.post('/login', usersControllers.login)
+
+
+router.use(checkAuth)
+router.delete('/:uid', usersControllers.deleteUser)
+router.get('/:uid', usersControllers.getUserData)
+router.get('/', usersControllers.getUsers)
+
+
 
 
 module.exports = router;

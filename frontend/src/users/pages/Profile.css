@@ -1,0 +1,22 @@
+.user-profile {
+
+}
+
+.user-profile-controls {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+.place-item-modal-content {
+    padding: 0;
+}
+
+.place-item-modal-actions {
+    text-align: right;
+}
+
+.place-item-actions button,
+.place-item-actions a {
+    margin: 0.5rem;
+}

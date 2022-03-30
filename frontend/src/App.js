@@ -9,6 +9,7 @@ import Auth from "./users/pages/Auth";
 import {AuthContext} from "./shared/context/auth-context";
 import {useAuth} from "./shared/hoooks/auth-hook";
 import AllPosts from "./posts/pages/AllPosts";
+import Profile from "./users/pages/Profile";
 
 
 const App = () => {
@@ -25,6 +26,10 @@ const App = () => {
 
                 <Route path="/users" exact={true}>
                     <Users/>
+                </Route>
+
+                <Route path="/users/:userId">
+                    <Profile/>
                 </Route>
 
                 <Route path="/:userId/posts">

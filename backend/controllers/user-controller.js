@@ -5,6 +5,7 @@ const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 
 
+
 const getUsers = async (req, res, next) => {
     let users;
     try {
@@ -17,6 +18,47 @@ const getUsers = async (req, res, next) => {
     }
 
     res.json({users: users.map(user => user.toObject({getters: true}))});
+}
+
+
+const getUserData = async (req, res, next) => {
+    const userId = req.params.uid;
+    let user;
+    try {
+        user = await User.findById(userId,'-password');
+    }catch (e) {
+        const error = new HttpError(
+            "Could not fetch user", 500
+        )
+        return next(error)
+    }
+
+    res.json({user: user.toObject({getters: true})});
+}
+
+const deleteUser = async (req, res, next) => {
+    const userId = req.params.uid
+
+    let user;
+    try {
+         user = await User.findById(userId,'-password')
+    }catch (e) {
+        const error = new HttpError(
+            "Could not fetch user", 500
+        )
+        return next(error)
+    }
+
+    try {
+        await user.remove();
+    }catch (e) {
+        const error = new HttpError(
+            "Could not delete user", 500
+        )
+        return next(error)
+    }
+
+    res.status(200).json({message: 'User was successful deleted'})
 }
 
 const signup = async (req, res, next) => {
@@ -89,6 +131,8 @@ const signup = async (req, res, next) => {
 
     res.status(201).json(
         {   userId: createdUser.id,
+            userName :createdUser.name,
+            userImg: createdUser.image,
             email: createdUser.email,
             token: token
         }
@@ -142,6 +186,8 @@ const login = async (req, res, next) => {
 
     res.json(
         {   userId: existingUser.id,
+            userName: existingUser.name,
+            userImg: existingUser.image,
             email: existingUser.email,
             token: token
         }
@@ -150,5 +196,7 @@ const login = async (req, res, next) => {
 
 
 exports.getUsers = getUsers;
+exports.getUserData = getUserData;
+exports.deleteUser = deleteUser;
 exports.signup = signup;
 exports.login = login;

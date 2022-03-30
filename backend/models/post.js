@@ -11,7 +11,11 @@ const postSchema = new Schema({
         lat : {type: Number, required: true},
         lng : {type: Number, required: true},
     },
-    creator: {type: mongoose.Types.ObjectId, required: true, ref: 'User'},
+    creator: {
+        id: { type: mongoose.Types.ObjectId, required: true, ref: 'User'},
+        name: {type: String, required: true},
+        image: {type: String, required: true},
+    }
 })
 
 //above type : mongoose Object ID and

@@ -1,6 +1,6 @@
 .user-item {
-  margin: 1rem;
-  width: calc(45% - 2rem);
+  margin: 1rem auto;
+  width: 80%;
   min-width: 17.5rem;
 }
 
@@ -43,7 +43,13 @@
 .user-item:active h3 {
   color: #292929;
 }
+.user-item-info {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
+}
 .user-item-info h3 {
   margin: 0;
 }

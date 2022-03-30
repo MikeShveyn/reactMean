@@ -10,6 +10,8 @@ import './PostItem.css'
 import {useHttpClient} from "../../shared/hoooks/http-hook";
 import ErrorModal from "../../shared/components/UIElements/Error/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/Loading/LoadingSpinner";
+import Avatar from "../../shared/components/UIElements/Avatar/Avatar";
+import {Link} from "react-router-dom";
 
 
 const PostItem = props => {
@@ -69,13 +71,23 @@ const PostItem = props => {
             <li className='place-item'>
                 <Card className='place-item-content'>
                     {isLoading && <LoadingSpinner asOverlay/>}
-                    <div className='place-item-image'>
-                        <img src={props.image} alt={props.title}/>
-                    </div>
                     <div className='place-item-info'>
+                        <div className={"author-data"}>
+                            <Link to={`/users/${props.creatorId}`}>
+                                <div className="user-item-image">
+                                    <Avatar image={props.creatorImage} alt={""}/>
+                                </div>
+                                <div className="user-item-info">
+                                    <h3>{props.creatorName}</h3>
+                                </div>
+                            </Link>
+                        </div>
                         <h2>{props.title}</h2>
                         <h3>{props.address}</h3>
                         <p>{props.description}</p>
+                    </div>
+                    <div className='place-item-image'>
+                        <img src={props.image} alt={props.title}/>
                     </div>
                     <div className='place-item-actions'>
                         <Button inverse onClick={openMapHandler}>VIEW ON MAP</Button>

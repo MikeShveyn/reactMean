@@ -19,6 +19,7 @@ const UsersList = props => {
                 id={user.id}
                 image={user.image}
                 name={user.name}
+                email={user.email}
                 postCount={user.posts.length}/>
         })}
     </ul>

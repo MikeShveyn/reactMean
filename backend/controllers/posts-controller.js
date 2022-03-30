@@ -84,14 +84,6 @@ const createPost = async (req, res, next) => {
         return next(e)
     }
 
-    const newPost = new Post({
-        title,
-        description,
-        address,
-        location,
-        image : 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/City_Lights_%2833522578970%29.jpg/1024px-City_Lights_%2833522578970%29.jpg?1646766503738',
-        creator : req.userData.userId
-    })
 
     let user;
     try {
@@ -111,6 +103,16 @@ const createPost = async (req, res, next) => {
         );
         return next(error);
     }
+
+    const newPost = new Post({
+        title,
+        description,
+        address,
+        location,
+        image : 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/City_Lights_%2833522578970%29.jpg/1024px-City_Lights_%2833522578970%29.jpg?1646766503738',
+        creator : {id: req.userData.userId, name: user.name, image: user.image}
+
+    })
 
     try{
         const sess = await mongoose.startSession();
