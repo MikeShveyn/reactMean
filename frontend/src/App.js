@@ -13,11 +13,37 @@ import Profile from "./users/pages/Profile";
 
 
 const App = () => {
-    const {token, login, logout, userId} = useAuth()
+    const {token, login, logout, userId, isAdmin} = useAuth()
 
     let routes;
 
-    if (token) {
+    if (token && !isAdmin) {
+        routes = (
+            <Switch>>
+                <Route path="/" exact={true}>
+                    <AllPosts/>
+                </Route>
+
+                <Route path="/users/:userId">
+                    <Profile/>
+                </Route>
+
+                <Route path="/:userId/posts">
+                    <UserPosts/>
+                </Route>
+
+                <Route path="/posts/new" exact={true}>
+                    <NewPost/>
+                </Route>
+
+                <Route path="/posts/:postId" exact={true}>
+                    <UpdatePost/>
+                </Route>
+
+                <Redirect to='/'/>
+            </Switch>
+        );
+    }else if(token && isAdmin) {
         routes = (
             <Switch>>
                 <Route path="/" exact={true}>

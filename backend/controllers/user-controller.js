@@ -98,6 +98,7 @@ const signup = async (req, res, next) => {
     const createdUser = new User({
         name,
         email,
+        isAdmin : false,
         password : hashPassword,
         image : 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/City_Lights_%2833522578970%29.jpg/1024px-City_Lights_%2833522578970%29.jpg?1646766503738',
         places: []
@@ -134,7 +135,8 @@ const signup = async (req, res, next) => {
             userName :createdUser.name,
             userImg: createdUser.image,
             email: createdUser.email,
-            token: token
+            token: token,
+            isAdmin: createdUser.isAdmin
         }
     )
 
@@ -189,7 +191,8 @@ const login = async (req, res, next) => {
             userName: existingUser.name,
             userImg: existingUser.image,
             email: existingUser.email,
-            token: token
+            token: token,
+            isAdmin: existingUser.isAdmin
         }
     )
 }

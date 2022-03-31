@@ -27,6 +27,7 @@ const PostList = props => {
                 title={place.title}
                 description={place.description}
                 address={place.address}
+                category={place.category}
                 creatorId={place.creator.id}
                 creatorName={place.creator.name}
                 creatorImage={place.creator.image}

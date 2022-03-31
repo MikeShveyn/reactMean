@@ -27,6 +27,10 @@ const NewPost = () => {
         address: {
             value: '',
             isValid: false
+        },
+        category: {
+            value: '',
+            isValid: false
         }
     },false)
 
@@ -41,6 +45,7 @@ const NewPost = () => {
                    title: formState.inputs.title.value,
                    description : formState.inputs.description.value,
                    address : formState.inputs.address.value,
+                   category: formState.inputs.category.value
                }),
                {'Content-Type': 'application/json',
                Authorization: 'Bearer ' + auth.token}
