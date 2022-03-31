@@ -98,6 +98,7 @@ const App = () => {
         isLoggedIn: !!token,
         token: token,
         userId,
+        isAdmin,
         login,
         logout
     }}>

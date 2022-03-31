@@ -79,6 +79,14 @@ const NewPost = () => {
                 errorText="Please enter a valid description."/>
 
             <Input
+                id="category"
+                element='textarea'
+                label='Category'
+                validators={[VALIDATOR_MINLENGTH(5)]}
+                onInput={inputChangeHandler}
+                errorText="Please enter a valid category."/>
+
+            <Input
                 id="address"
                 element='input'
                 label='Address'

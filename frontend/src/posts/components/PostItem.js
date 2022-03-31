@@ -73,18 +73,18 @@ const PostItem = props => {
                     {isLoading && <LoadingSpinner asOverlay/>}
                     <div className='place-item-info'>
                         <div className={"author-data"}>
-                            <Link to={`/users/${props.creatorId}`}>
+                            <Link to={`/${props.creatorId}/posts`}>
                                 <div className="user-item-image">
                                     <Avatar image={props.creatorImage} alt={""}/>
                                 </div>
                                 <div className="user-item-info">
                                     <h3>{props.creatorName}</h3>
+                                    <h3>{props.category}</h3>
                                 </div>
                             </Link>
                         </div>
                         <h2>{props.title}</h2>
                         <h3>{props.address}</h3>
-                        <h3>{props.category}</h3>
                         <p>{props.description}</p>
                     </div>
                     <div className='place-item-image'>
@@ -93,7 +93,7 @@ const PostItem = props => {
                     <div className='place-item-actions'>
                         <Button inverse onClick={openMapHandler}>VIEW ON MAP</Button>
                         {auth.userId === props.creatorId &&  <Button to={`/posts/${props.id}`}>EDIT</Button>}
-                        {auth.userId === props.creatorId && <Button danger onClick={openConfirmHandler}>DELETE</Button>}
+                        {(auth.userId === props.creatorId || auth.isAdmin) && <Button danger onClick={openConfirmHandler}>DELETE</Button>}
                     </div>
                 </Card>
             </li>

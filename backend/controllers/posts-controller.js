@@ -123,7 +123,6 @@ const createPost = async (req, res, next) => {
         await user.save({session: sess,  validateModifiedOnly: true})
         await sess.commitTransaction();
     }catch (e) {
-        console.log(e)
         const error = new HttpError(
             'Creating post failed',
             500
@@ -155,7 +154,7 @@ const updatePost = async (req, res, next) => {
         return next(error)
     }
 
-    if(post.creator.toString() !== req.userData.userId) {
+    if(post.creator.id.toString() !== req.userData.userId) {
         const error = new HttpError(
             "You have no permissions to update the post", 401
         )
@@ -184,7 +183,8 @@ const deletePost = async (req, res, next) => {
 
     let post;
     try {
-        post = await Post.findById(postId).populate('creator');
+        post = await Post.findById(postId).populate({path: "creator",
+                                                populate: {path: "id"}});
     }catch (e) {
         const error = new HttpError(
             "Could not fetch posts", 500
@@ -199,7 +199,27 @@ const deletePost = async (req, res, next) => {
         return next(error)
     }
 
-    if(post.creator.id !== req.userData.userId) {
+
+    let user;
+    try {
+        user = await User.findById(req.userData.userId);
+    }catch (e) {
+        const error = new HttpError(
+            'Creating post failed',
+            500
+        );
+        return next(error);
+    }
+
+    if(!user) {
+        const error = new HttpError(
+            'Could not find user , creator with provided id',
+            500
+        );
+        return next(error);
+    }
+
+    if(!user.isAdmin && post.creator.id.id.toString() !== req.userData.userId) {
         const error = new HttpError(
             "You have no permissions to delete the post", 401
         )
@@ -210,10 +230,11 @@ const deletePost = async (req, res, next) => {
         const sess = await mongoose.startSession();
         sess.startTransaction();
         await post.remove({session: sess});
-        post.creator.posts.pull(post);
-        await post.creator.save({session: sess})
+        post.creator.id.posts.pull(post);
+        await post.creator.id.save({session: sess,  validateModifiedOnly: true})
         await sess.commitTransaction();
     }catch (e) {
+       console.log(e)
         const error = new HttpError(
             "Could not delete post", 500
         )
