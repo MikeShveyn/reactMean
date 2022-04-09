@@ -45,7 +45,6 @@ const getPostById = async (req, res, next) => {
     res.json({post : post.toObject({getters: true})});
 }
 
-
 const getPostByUserId = async (req, res, next) => {
     const userId = req.params.uid;
 

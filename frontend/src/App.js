@@ -10,6 +10,8 @@ import {AuthContext} from "./shared/context/auth-context";
 import {useAuth} from "./shared/hoooks/auth-hook";
 import AllPosts from "./posts/pages/AllPosts";
 import Profile from "./users/pages/Profile";
+import NewAdminPost from "./posts/pages/NewAdminPost";
+import UpdateAdminPost from "./posts/pages/UpdateAdminPost";
 
 
 const App = () => {
@@ -19,7 +21,7 @@ const App = () => {
 
     if (token && !isAdmin) {
         routes = (
-            <Switch>>
+            <Switch>
                 <Route path="/" exact={true}>
                     <AllPosts/>
                 </Route>
@@ -45,7 +47,7 @@ const App = () => {
         );
     }else if(token && isAdmin) {
         routes = (
-            <Switch>>
+            <Switch>
                 <Route path="/" exact={true}>
                     <AllPosts/>
                 </Route>
@@ -63,11 +65,11 @@ const App = () => {
                 </Route>
 
                 <Route path="/posts/new" exact={true}>
-                    <NewPost/>
+                    <NewAdminPost/>
                 </Route>
 
                 <Route path="/posts/:postId" exact={true}>
-                    <UpdatePost/>
+                    <UpdateAdminPost/>
                 </Route>
 
                 <Redirect to='/'/>
@@ -75,7 +77,7 @@ const App = () => {
         );
     } else {
         routes = (
-            <Switch>>
+            <Switch>
                 <Route path="/" exact={true}>
                     <AllPosts/>
                 </Route>

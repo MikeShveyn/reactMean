@@ -29,6 +29,7 @@ router.post('/',
     ],
     postsControllers.createPost)
 
+
 router.patch('/:postId',
     check('title')
         .not()
@@ -39,5 +40,6 @@ router.patch('/:postId',
 
 
 router.delete('/:postId', postsControllers.deletePost)
+
 
 module.exports = router;

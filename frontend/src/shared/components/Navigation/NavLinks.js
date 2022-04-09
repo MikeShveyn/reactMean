@@ -27,9 +27,14 @@ const NavLinks = props => {
             <NavLink to={`/${auth.userId}/posts`}>MY POSTS</NavLink>
         </li>
         }
-        {auth.isLoggedIn &&
+        {auth.isLoggedIn && !auth.isAdmin &&
         <li>
             <NavLink to="/posts/new">ADD POST</NavLink>
+        </li>
+        }
+        {auth.isLoggedIn && auth.isAdmin &&
+        <li>
+            <NavLink to="/posts/new">ADMIN POST</NavLink>
         </li>
         }
         {auth.isLoggedIn &&

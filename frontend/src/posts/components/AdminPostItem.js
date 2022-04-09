@@ -2,64 +2,50 @@ import React, {useState, useContext} from "react";
 import Card from "../../shared/components/UIElements/Card/Card";
 import Button from "../../shared/components/FormElements/Button";
 import Modal from "../../shared/components/UIElements/Modal/Modal";
-import Map from "../../shared/components/UIElements/Map/Map";
-import {AuthContext} from "../../shared/context/auth-context";
 
+import {AuthContext} from "../../shared/context/auth-context";
 
 import './PostItem.css'
 import {useHttpClient} from "../../shared/hoooks/http-hook";
 import ErrorModal from "../../shared/components/UIElements/Error/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/Loading/LoadingSpinner";
-import Avatar from "../../shared/components/UIElements/Avatar/Avatar";
-import {Link, useHistory} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 
 
-const PostItem = props => {
+
+const AdminPostItem = props => {
     const {isLoading, error, sendRequest, clearError} = useHttpClient();
     const auth = useContext(AuthContext);
-    const [showMap, setShowMap] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
+
     const history = useHistory();
-    const openMapHandler = () => setShowMap(true);
-    const closeMapHandler = () => setShowMap(false);
     const openConfirmHandler = () => setShowConfirm(true);
     const closeConfirmHandler = () => setShowConfirm(false);
     const confirmDeleteHandler = async () => {
         closeConfirmHandler();
         try {
-            await sendRequest(`http://localhost:5000/api/posts/${props.id}`,
+            await sendRequest(`http://localhost:5000/api/admin/post/${props.id}`,
                 'DELETE',
                 null,
                 {Authorization: 'Bearer ' + auth.token}
             )
         }catch (e) {
 
-        }
-        finally {
+        }finally {
             history.push('/'); // redirect
             history.go(0)
+
         }
     }
 
     return (
         <React.Fragment>
             <ErrorModal error={error} onClear={clearError} />
-            <Modal
-                show={showMap}
-                onCancel={closeMapHandler}
-                header={props.address}
-                contentClass="place-item-modal-content"
-                footerClass="place-item-modal-actions"
-                footer={<Button onClick={closeMapHandler}>CLOSE</Button>}>
-              <div className="map-container">
-                    <Map center={props.coordinate} zoom={16}/>
-              </div>
-            </Modal>
 
             <Modal
                 show={showConfirm}
                 onCancel={closeConfirmHandler}
-                header="Delete your place?"
+                header="Delete your post?"
                 contentClass="place-item-modal-content"
                 footerClass="place-item-modal-actions"
                 footer={
@@ -71,37 +57,22 @@ const PostItem = props => {
                 <p>Post can't be restored</p>
             </Modal>
 
-            <li className='place-item'>
                 <Card className='place-item-content'>
                     {isLoading && <LoadingSpinner asOverlay/>}
                     <div className='place-item-info'>
-                        <div className={"author-data"}>
-                            <Link to={`/${props.creatorId}/posts`}>
-                                <div className="user-item-image">
-                                    <Avatar image={props.creatorImage} alt={""}/>
-                                </div>
-                                <div className="user-item-info">
-                                    <h3>{props.creatorName}</h3>
-                                    <h3>{props.category}</h3>
-                                </div>
-                            </Link>
-                        </div>
                         <h2>{props.title}</h2>
-                        <h3>{props.address}</h3>
                         <p>{props.description}</p>
                     </div>
                     <div className='place-item-image'>
                         <img src={props.image} alt={props.title}/>
                     </div>
                     <div className='place-item-actions'>
-                        <Button inverse onClick={openMapHandler}>VIEW ON MAP</Button>
-                        {auth.userId === props.creatorId &&  <Button to={`/posts/${props.id}`}>EDIT</Button>}
-                        {(auth.userId === props.creatorId || auth.isAdmin) && <Button danger onClick={openConfirmHandler}>DELETE</Button>}
+                        {auth.isAdmin &&  <Button to={`/posts/${props.id}`}>EDIT</Button>}
+                        {auth.isAdmin && <Button danger onClick={openConfirmHandler}>DELETE</Button>}
                     </div>
                 </Card>
-            </li>
         </React.Fragment>
     )
 }
 
-export default PostItem;
+export default AdminPostItem;
