@@ -50,3 +50,9 @@ body {
   gap: 24px;
   margin: 0 auto;
 }
+
+.filters input {
+  height: 36px;
+}
+
+

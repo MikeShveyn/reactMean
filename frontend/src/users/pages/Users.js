@@ -4,11 +4,15 @@ import ErrorModal from "../../shared/components/UIElements/Error/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/Loading/LoadingSpinner";
 import {useHttpClient} from "../../shared/hoooks/http-hook";
 import {AuthContext} from "../../shared/context/auth-context";
+import Select from "../../shared/components/FormElements/Select/Select";
 
 const Users = () => {
     const auth = useContext(AuthContext);
-    const [loadedUsers, setLoadedUsers] = useState();
+    const [titleSearch, setTitleSearch] = useState("");
+    const [loadedUsers, setLoadedUsers] = useState([]);
     const {isLoading, error, sendRequest, clearError} = useHttpClient();
+
+
 
     useEffect(()=> {
         const fetchUsers = async () => {
@@ -25,12 +29,32 @@ const Users = () => {
     },[sendRequest])
 
 
+    const inputChangeHandler = (event) => {
+        console.log('change ', event.target.value);
+        setTitleSearch(event.target.value);
+    }
+
+
     return <React.Fragment>
         <ErrorModal error={error} onClear={clearError}/>
         {isLoading && <div className="center">
             <LoadingSpinner/>
         </div>}
-        {!isLoading && loadedUsers && <UsersList items={loadedUsers}/>}
+
+        <div className="filters">
+            <input
+                id="title"
+                type='text'
+                onInput={inputChangeHandler}/>
+        </div>
+
+        {!isLoading && loadedUsers && <UsersList items={loadedUsers.filter((u => {
+            if(titleSearch) {
+                return u.name.includes(titleSearch);
+            }else{
+                return u;
+            }
+        }))}/>}
     </React.Fragment>
 
 };

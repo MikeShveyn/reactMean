@@ -6,12 +6,20 @@ import AdminPostItem from "../components/AdminPostItem";
 import Select from "../../shared/components/FormElements/Select/Select";
 
 
+
+
 const AllPosts = props => {
     const [filter, setFilter] = useState("none");
+    const [titleSearch, setTitleSearch] = useState("");
     const {isLoading, error, sendRequest, clearError} = useHttpClient();
     const [loadedPosts, setLoadedPosts] = useState([]);
     const [loadedAdminPost, setLoadedAdminPost] = useState();
 
+
+    const inputChangeHandler = (event) => {
+        console.log('change ', event.target.value);
+        setTitleSearch(event.target.value);
+    }
 
     const FilterType = [
         { id: 1, label: "Select Category", value: "none" },
@@ -20,6 +28,7 @@ const AllPosts = props => {
         { id: 4, label: "Economics", value: "economics" },
         { id: 5, label: "Culture", value: "culture" },
     ];
+
 
     const handleFilter = (value) => {
         setFilter(value);
@@ -68,16 +77,26 @@ const AllPosts = props => {
 
         <div className="filters">
             <Select items={FilterType} onChange={handleFilter} />
+            <input
+                id="title"
+                type='text'
+                onInput={inputChangeHandler}/>
         </div>
+
 
         {!isLoading && !loadedPosts &&
             <h2>No users posts available</h2>
         }
         {!isLoading && loadedPosts &&
              <PostList items={loadedPosts.filter((p)=>{
-                 if(filter !== 'none') {
+                 if(filter !== 'none' && titleSearch) {
+                     return p.category === filter && p.title.includes(titleSearch);
+                 }else if(filter !== 'none' && !titleSearch) {
                      return p.category === filter;
-                 }else{
+                 }else if(filter === 'none' && titleSearch) {
+                     return p.title.includes(titleSearch);
+                 }
+                 else{
                      return p;
                  }
              })}/>
