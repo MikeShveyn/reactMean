@@ -42,6 +42,7 @@ const deleteUser = async (req, res, next) => {
     let user;
     try {
          user = await User.findById(userId,'-password')
+
     }catch (e) {
         const error = new HttpError(
             "Could not fetch user", 500

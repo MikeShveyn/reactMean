@@ -17,13 +17,12 @@ const Users = () => {
                 'GET',
                 null,
                 {Authorization: 'Bearer ' + auth.token});
-                setLoadedUsers(data.users);
+                setLoadedUsers(data.users.filter(u => u.id !== auth.userId)); //todo haim
             }catch (e) {
             }
         }
        fetchUsers();
     },[sendRequest])
-
 
 
     return <React.Fragment>

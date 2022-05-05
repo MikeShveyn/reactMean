@@ -13,6 +13,7 @@ const Profile = () => {
     const {isLoading, error, sendRequest, clearError} = useHttpClient();
     const [userData, setUserData] = useState();
     const [showConfirm, setShowConfirm] = useState(false);
+    const [showEdit, setShowEdit] = useState(false);
 
     useEffect(()=> {
         const fetchUserData= async () => {
@@ -45,6 +46,11 @@ const Profile = () => {
         }
     }
 
+    const openEditHandler = () => {
+
+    }
+
+
     return <React.Fragment>
         <ErrorModal error={error} onClear={clearError}/>
         <Modal
@@ -61,6 +67,7 @@ const Profile = () => {
             }>
             <p>Profile can't be restored</p>
         </Modal>
+
         {isLoading && <div className="center">
             <LoadingSpinner/>
         </div>}
@@ -74,6 +81,7 @@ const Profile = () => {
                 postCount={userData.posts.length}/>
             <div className={"user-profile-controls"}>
                 {auth.isLoggedIn && <Button danger onClick={openConfirmHandler}>DELETE PROFILE</Button>}
+                {auth.isLoggedIn && <Button to={`/update/${userData.id}`}>EDIT PROFILE</Button>}
             </div>
         </div>}
     </React.Fragment>

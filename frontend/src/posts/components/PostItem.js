@@ -76,7 +76,7 @@ const PostItem = props => {
                     {isLoading && <LoadingSpinner asOverlay/>}
                     <div className='place-item-info'>
                         <div className={"author-data"}>
-                            <Link to={`/${props.creatorId}/posts`}>
+                            <Link to={`/users/${props.creatorId}`}>
                                 <div className="user-item-image">
                                     <Avatar image={props.creatorImage} alt={""}/>
                                 </div>

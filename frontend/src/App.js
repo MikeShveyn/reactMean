@@ -12,6 +12,7 @@ import AllPosts from "./posts/pages/AllPosts";
 import Profile from "./users/pages/Profile";
 import NewAdminPost from "./posts/pages/NewAdminPost";
 import UpdateAdminPost from "./posts/pages/UpdateAdminPost";
+import UpdateUser from "./users/pages/UpdateUser";
 
 
 const App = () => {
@@ -32,6 +33,10 @@ const App = () => {
 
                 <Route path="/:userId/posts">
                     <UserPosts/>
+                </Route>
+
+                <Route path="/update/:userId">
+                    <UpdateUser/>
                 </Route>
 
                 <Route path="/posts/new" exact={true}>
