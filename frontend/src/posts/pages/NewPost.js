@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import Input from "../../shared/components/FormElements/Input/Input";
 import {VALIDATOR_MINLENGTH, VALIDATOR_REQUIRE} from "../../shared/components/Utils/validators";
 import Button from "../../shared/components/FormElements/Button";
@@ -9,9 +9,11 @@ import ErrorModal from "../../shared/components/UIElements/Error/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/Loading/LoadingSpinner";
 import {useHistory} from "react-router-dom";
 import './PostForm.css';
+import Select from "../../shared/components/FormElements/Select/Select";
 
 
 const NewPost = () => {
+    const [filter, setFilter] = useState("none");
     const {isLoading, error, sendRequest, clearError} = useHttpClient();
     const auth = useContext(AuthContext)
 
@@ -28,13 +30,22 @@ const NewPost = () => {
             value: '',
             isValid: false
         },
-        category: {
-            value: '',
-            isValid: false
-        }
     },false)
 
-   const history = useHistory();
+    const FilterType = [
+        { id: 1, label: "Select Category", value: "none" },
+        { id: 2, label: "Sport", value: "sport" },
+        { id: 3, label: "Politics", value: "politics" },
+        { id: 4, label: "Economics", value: "economics" },
+        { id: 5, label: "Culture", value: "culture" },
+    ];
+
+    const handleFilter = (value) => {
+        setFilter(value);
+    };
+
+
+    const history = useHistory();
 
    const placeSubmitHandler = async event => {
        event.preventDefault();
@@ -45,7 +56,7 @@ const NewPost = () => {
                    title: formState.inputs.title.value,
                    description : formState.inputs.description.value,
                    address : formState.inputs.address.value,
-                   category: formState.inputs.category.value
+                   category: filter
                }),
                {'Content-Type': 'application/json',
                Authorization: 'Bearer ' + auth.token}
@@ -78,13 +89,7 @@ const NewPost = () => {
                 onInput={inputChangeHandler}
                 errorText="Please enter a valid description."/>
 
-            <Input
-                id="category"
-                element='textarea'
-                label='Category'
-                validators={[VALIDATOR_MINLENGTH(5)]}
-                onInput={inputChangeHandler}
-                errorText="Please enter a valid category."/>
+            <Select items={FilterType} onChange={handleFilter} />
 
             <Input
                 id="address"

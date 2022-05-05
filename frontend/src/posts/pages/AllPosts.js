@@ -9,7 +9,7 @@ import Select from "../../shared/components/FormElements/Select/Select";
 const AllPosts = props => {
     const [filter, setFilter] = useState("none");
     const {isLoading, error, sendRequest, clearError} = useHttpClient();
-    const [loadedPosts, setLoadedPosts] = useState();
+    const [loadedPosts, setLoadedPosts] = useState([]);
     const [loadedAdminPost, setLoadedAdminPost] = useState();
 
 
@@ -18,7 +18,7 @@ const AllPosts = props => {
         { id: 2, label: "Sport", value: "sport" },
         { id: 3, label: "Politics", value: "politics" },
         { id: 4, label: "Economics", value: "economics" },
-        { id: 4, label: "Culture", value: "culture" },
+        { id: 5, label: "Culture", value: "culture" },
     ];
 
     const handleFilter = (value) => {
@@ -74,7 +74,13 @@ const AllPosts = props => {
             <h2>No users posts available</h2>
         }
         {!isLoading && loadedPosts &&
-             <PostList items={loadedPosts}/>
+             <PostList items={loadedPosts.filter((p)=>{
+                 if(filter !== 'none') {
+                     return p.category === filter;
+                 }else{
+                     return p;
+                 }
+             })}/>
         }
     </React.Fragment>
 

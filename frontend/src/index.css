@@ -40,3 +40,13 @@ body {
   justify-content: center;
   align-items: center;
 }
+
+.filters {
+  width: 80%;
+  height: 60px;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  gap: 24px;
+  margin: 0 auto;
+}
