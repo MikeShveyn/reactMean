@@ -17,7 +17,6 @@ const AllPosts = props => {
 
 
     const inputChangeHandler = (event) => {
-        console.log('change ', event.target.value);
         setTitleSearch(event.target.value);
     }
 

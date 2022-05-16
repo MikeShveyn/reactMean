@@ -13,7 +13,8 @@ import Profile from "./users/pages/Profile";
 import NewAdminPost from "./posts/pages/NewAdminPost";
 import UpdateAdminPost from "./posts/pages/UpdateAdminPost";
 import UpdateUser from "./users/pages/UpdateUser";
-
+import Review from "./users/pages/Review";
+import ReactWeather, { useOpenWeather } from 'react-open-weather';
 
 const App = () => {
     const {token, login, logout, userId, isAdmin} = useAuth()
@@ -47,6 +48,10 @@ const App = () => {
                     <UpdatePost/>
                 </Route>
 
+                <Route path="/review" exact={true}>
+                    <Review/>
+                </Route>
+
                 <Redirect to='/'/>
             </Switch>
         );
@@ -77,6 +82,10 @@ const App = () => {
                     <UpdateAdminPost/>
                 </Route>
 
+                <Route path="/review" exact={true}>
+                    <Review/>
+                </Route>
+
                 <Redirect to='/'/>
             </Switch>
         );
@@ -95,11 +104,22 @@ const App = () => {
                     <Auth/>
                 </Route>
 
+                <Route path="/review" exact={true}>
+                    <Review/>
+                </Route>
+
                 <Redirect to='/auth'/>
             </Switch>
         );
     }
 
+    const { data, isLoading, errorMessage } = useOpenWeather({
+        key: '2cfd91ccaa7cba171f67648224f8fd26',
+        lat: '48.137154',
+        lon: '11.576124',
+        lang: 'en',
+        unit: 'metric', // values are (metric, standard, imperial)
+    });
 
     return <AuthContext.Provider value={{
         isLoggedIn: !!token,
@@ -112,6 +132,18 @@ const App = () => {
         <Router>
             <MainNavigation/>
             <main>{routes}</main>
+            <footer>
+                <ReactWeather
+                    isLoading={isLoading}
+                    errorMessage={errorMessage}
+                    data={data}
+                    lang="en"
+                    locationLabel="Munich"
+                    unitsLabels={{ temperature: 'C', windSpeed: 'Km/h' }}
+                    showForecast
+                />
+            </footer>
+
         </Router>
     </AuthContext.Provider>
 

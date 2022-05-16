@@ -25,7 +25,6 @@ app.use('/api/posts' ,postsRoutes);
 app.use('/api/users' ,usersRoutes);
 app.use('/api/admin', adminRoutes);
 
-
 // error for unsupported routes
 app.use((req, res, next)=>{
     const error = new HttpError('Could not find this route', 401)
@@ -49,4 +48,5 @@ then(()=>{
 }).catch((err)=>{
     console.log(err);
 })
+
 

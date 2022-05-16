@@ -40,6 +40,10 @@ const PostItem = props => {
             history.go(0)
         }
     }
+    const shareHandler = () => {
+        const whatsAppURL = `https://wa.me?text=${window.location.href+'/posts/'+props.id}`;
+        window.open(whatsAppURL, '_blank')
+    }
 
     return (
         <React.Fragment>
@@ -95,6 +99,7 @@ const PostItem = props => {
                     </div>
                     <div className='place-item-actions'>
                         <Button inverse onClick={openMapHandler}>VIEW ON MAP</Button>
+                        <Button inverse onClick={shareHandler}>SHARE</Button>
                         {auth.userId === props.creatorId &&  <Button to={`/posts/${props.id}`}>EDIT</Button>}
                         {(auth.userId === props.creatorId || auth.isAdmin) && <Button danger onClick={openConfirmHandler}>DELETE</Button>}
                     </div>
