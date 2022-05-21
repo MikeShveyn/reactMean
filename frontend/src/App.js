@@ -16,9 +16,12 @@ import UpdateUser from "./users/pages/UpdateUser";
 import Review from "./users/pages/Review";
 import ReactWeather, { useOpenWeather } from 'react-open-weather';
 
+
+
+
 const App = () => {
     const {token, login, logout, userId, isAdmin} = useAuth()
-
+    const {rate, setRate} = useState([]);
     let routes;
 
     if (token && !isAdmin) {
@@ -113,6 +116,7 @@ const App = () => {
         );
     }
 
+
     const { data, isLoading, errorMessage } = useOpenWeather({
         key: '2cfd91ccaa7cba171f67648224f8fd26',
         lat: '48.137154',
@@ -120,6 +124,26 @@ const App = () => {
         lang: 'en',
         unit: 'metric', // values are (metric, standard, imperial)
     });
+
+
+    useEffect(() => {
+        const fetchC= async () => {
+            try {
+              const response = await fetch('https://openexchangerates.org/api/latest.json?app_id=ec1c9d5fc17047b68458a1cd69427894', {
+                  method: 'GET'
+              });
+              const data = await response.json();
+
+              const dataArray = Object.entries(data.rates);
+              setRate(dataArray)
+              console.log(rate)
+            }catch (e) {
+
+            }
+
+        }
+        fetchC();
+    }, [setRate])
 
     return <AuthContext.Provider value={{
         isLoggedIn: !!token,
@@ -140,9 +164,14 @@ const App = () => {
                     lang="en"
                     locationLabel="Munich"
                     unitsLabels={{ temperature: 'C', windSpeed: 'Km/h' }}
-                    showForecast
                 />
             </footer>
+
+
+
+            <div className={"apiNews"} >
+
+            </div>
 
         </Router>
     </AuthContext.Provider>

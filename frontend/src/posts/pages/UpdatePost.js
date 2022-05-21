@@ -27,7 +27,11 @@ const UpdatePost = () => {
         description: {
             value: '',
             isValid: true
-        }
+        },
+        image: {
+            value: '',
+            isValid: false
+        },
     }, true)
 
     const placeUpdateSubmitHandler = async event => {
@@ -38,6 +42,7 @@ const UpdatePost = () => {
                 JSON.stringify({
                     title: formState.inputs.title.value,
                     description : formState.inputs.description.value,
+                    image: formState.inputs.image.value
                 }),
                 {'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + auth.token}
@@ -65,7 +70,11 @@ const UpdatePost = () => {
                         description: {
                             value: data.post.description,
                             isValid: true
-                        }
+                        },
+                        image: {
+                            value: data.post.image,
+                            isValid: true
+                        },
                     },true)
             }
             catch (e) {
@@ -115,6 +124,16 @@ const UpdatePost = () => {
                 initialValue={loadedPost.description}
                 initialIsValid={true}
                 errorText="Please enter a valid description."/>
+
+            <Input
+                id="image"
+                element='input'
+                label='Image'
+                validators={[]}
+                onInput={inputHandler}
+                initialValue={loadedPost.image}
+                errorText="Please enter a url"/>
+
 
             <Button type="submit" disabled={!formState.isValid}>UPDATE PLACE</Button>
         </form>}

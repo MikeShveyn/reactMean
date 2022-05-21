@@ -30,6 +30,10 @@ const NewPost = () => {
             value: '',
             isValid: false
         },
+        image: {
+            value: '',
+            isValid: false
+        },
     },false)
 
     const FilterType = [
@@ -44,7 +48,6 @@ const NewPost = () => {
         setFilter(value);
     };
 
-
     const history = useHistory();
 
    const placeSubmitHandler = async event => {
@@ -56,7 +59,8 @@ const NewPost = () => {
                    title: formState.inputs.title.value,
                    description : formState.inputs.description.value,
                    address : formState.inputs.address.value,
-                   category: filter
+                   category: filter,
+                   image: formState.inputs.image.value
                }),
                {'Content-Type': 'application/json',
                Authorization: 'Bearer ' + auth.token}
@@ -98,6 +102,14 @@ const NewPost = () => {
                 validators={[VALIDATOR_REQUIRE()]}
                 onInput={inputChangeHandler}
                 errorText="Please enter a valid address"/>
+
+            <Input
+                id="image"
+                element='input'
+                label='Image'
+                validators={[]}
+                onInput={inputChangeHandler}
+                errorText="Please enter a url"/>
 
             <Button type="submit" disabled={!formState.isValid}>ADD PLACE</Button>
         </form>
