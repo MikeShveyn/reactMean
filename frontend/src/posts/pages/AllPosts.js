@@ -1,18 +1,21 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import PostList from "../components/PostList";
 import {useHttpClient} from "../../shared/hoooks/http-hook";
 import LoadingSpinner from "../../shared/components/UIElements/Loading/LoadingSpinner";
 import AdminPostItem from "../components/AdminPostItem";
 import Select from "../../shared/components/FormElements/Select/Select";
+import {AuthContext} from "../../shared/context/auth-context";
 
 
 
 
 const AllPosts = props => {
+    const auth = useContext(AuthContext)
     const [filter, setFilter] = useState("none");
     const [titleSearch, setTitleSearch] = useState("");
     const {isLoading, error, sendRequest, clearError} = useHttpClient();
     const [loadedPosts, setLoadedPosts] = useState([]);
+    const [loadedExchange, setLoadedExchange] = useState([]);
     const [loadedAdminPost, setLoadedAdminPost] = useState();
 
 
@@ -52,14 +55,27 @@ const AllPosts = props => {
             try {
                 const data = await sendRequest(`http://localhost:5000/api/posts`);
                 setLoadedPosts(data.posts)
-            }catch (e) {
-
+            } catch (e) {
+                console.log(e)
             }
-
         }
         fetchPosts();
     }, [sendRequest])
 
+
+    useEffect(() => {
+        const fetchPosts= async () => {
+            if(auth.token) {
+                try {
+                    const data = await sendRequest('https://api.exchangerate.host/latest')
+                    setLoadedExchange(Object.entries(data.rates));
+                }catch (e) {
+                    console.log(e)
+                }
+            }
+        }
+        fetchPosts();
+    }, [sendRequest, auth.token])
 
     return <React.Fragment>
         {isLoading && <div className="center">
@@ -100,6 +116,20 @@ const AllPosts = props => {
                  }
              })}/>
         }
+
+        {!isLoading && loadedExchange &&
+            <div className={'apiNews'}>
+                <ul className="app-news-list">
+                   {loadedExchange.map(o => {
+                      return <li>
+                          <span>{o[0]}</span>
+                          <span>{o[1]}</span>
+                      </li>
+                   }) }
+               </ul>
+            </div>
+        }
+
     </React.Fragment>
 
 

@@ -19,6 +19,8 @@ router.post('/signup' ,
 
 router.post('/login', usersControllers.login)
 
+router.post('/forgot', usersControllers.forgot)
+router.get('/reset/:hash', usersControllers.reset)
 
 router.use(checkAuth)
 router.delete('/:uid', usersControllers.deleteUser)
